@@ -1,0 +1,15 @@
+:root {
+  --rpg-bg: #171A2B;
+  --rpg-panel: #202642;
+  --rpg-surface: #2A3150;
+  --rpg-surface-light: #363E63;
+  --rpg-border: #3E4870;
+  --rpg-parchment: #F3E8D0;
+  --rpg-parchment-muted: #CFC3A8;
+  --rpg-amber: #F4B860;
+  --rpg-green: #67C587;
+  --rpg-violet: #9B8AFB;
+  --rpg-blue: #6CA8FF;
+  --rpg-danger: #E67B7B;
+  --rpg-white: #FFFFFF;
+}

@@ -1,0 +1,53 @@
+@import "./styles/tokens.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-color: #3E4870;
+  }
+
+  body {
+    background-color: #171A2B;
+    color: #F3E8D0;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Accessible focus ring across all interactive controls */
+  :focus-visible {
+    outline: 2px solid #F4B860;
+    outline-offset: 2px;
+  }
+}
+
+/* Custom scrollbars matching RPG dark palette */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #171A2B;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A3150;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3E4870;
+}
+
+/* Reduced motion global overrides */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
