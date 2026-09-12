@@ -45,6 +45,20 @@ const config: Config = {
         "glow-violet": "0 0 16px rgba(155, 138, 251, 0.35)",
         "glow-green": "0 0 16px rgba(103, 197, 135, 0.35)",
       },
+      animation: {
+        "bounce-subtle": "bounce-subtle 3s ease-in-out infinite",
+        float: "float 4s ease-in-out infinite",
+      },
+      keyframes: {
+        "bounce-subtle": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-4px)" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+      },
     },
   },
   plugins: [],

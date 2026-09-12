@@ -2,7 +2,9 @@ import { Router } from "express";
 import type { Request, Response } from "express";
 import type { ApiResponse } from "@liferpg/contracts";
 import { requireAuth } from "../middleware/auth.js";
-import { getMeHandler } from "../modules/auth/authController.js";
+import { onboardingHandler, getProfileHandler } from "../modules/users/userController.js";
+import { getCharacterHandler, updateCosmeticsHandler } from "../modules/character/characterController.js";
+import { getAssetsCatalogHandler } from "../modules/catalog/catalogController.js";
 
 export const apiRouter = Router();
 
@@ -20,5 +22,13 @@ apiRouter.get("/health", (req: Request, res: Response) => {
   res.status(200).json(response);
 });
 
-// Authenticated user profile resolution
-apiRouter.get("/me", requireAuth, getMeHandler);
+// Catalog endpoints (Public or authenticated)
+apiRouter.get("/catalog/assets", getAssetsCatalogHandler);
+
+// Authenticated user profile routes
+apiRouter.get("/me", requireAuth, getProfileHandler);
+apiRouter.post("/onboarding", requireAuth, onboardingHandler);
+
+// Authenticated character routes
+apiRouter.get("/character", requireAuth, getCharacterHandler);
+apiRouter.patch("/character/cosmetics", requireAuth, updateCosmeticsHandler);

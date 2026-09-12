@@ -48,8 +48,8 @@ life-rpg/
 ├── apps/
 │   ├── web/              # React 19 + Vite + TypeScript + Tailwind CSS (Nostalgic RPG UI)
 │   │   ├── src/
-│   │   │   ├── components/   # Accessible UI primitives (Button, Dialog, ProgressBar, etc.)
-│   │   │   ├── features/     # Auth, Quests, Character, Shop, Onboarding
+│   │   │   ├── components/   # CharacterAvatar (2D layer engine), Button, Dialog, ProgressBar
+│   │   │   ├── features/     # Auth, Onboarding, Character Customization, Home Game Scene
 │   │   │   ├── styles/       # RPG color tokens & custom pixel effects
 │   │   │   └── lib/          # Motion presets, utils
 │   │   └── index.html
@@ -58,12 +58,12 @@ life-rpg/
 │       └── src/
 │           ├── config/       # Strict Zod environment validation & Firebase Admin
 │           ├── middleware/   # Bearer Auth, Rate Limiter, Helmet, Request ID, Error Handler
-│           ├── modules/      # Auth, Users, Quests, Progression, Economy
+│           ├── modules/      # Auth, Users, Character, Quests, Catalog
 │           └── routes/       # Versioned REST endpoints (/api/v1/...)
 │
 └── packages/
     ├── contracts/        # Shared Zod schemas, DTOs, and ApiResponse envelope
-    ├── game-rules/       # Pure progression math, XP formulas, level titles, reward engine
+    ├── game-rules/       # Pure progression math, XP formulas, level titles, 8 base avatars, asset catalog
     └── tsconfig/         # Shared strict TypeScript compiler configurations
 ```
 
@@ -157,10 +157,12 @@ pnpm run build
   - React + Vite web client with nostalgic RPG design tokens, accessible primitives, and GameShell
   - Vitest test suites for progression math, level titles, rewards, API auth & UI components
 
-- [ ] **Phase 2: Onboarding & Character World**
-  - Interactive onboarding flow (Name, Age, Nickname, Base Avatar)
-  - Multi-layer 2D character avatar rendering engine (background + body + hair + outfit + accessories)
-  - Character idle animation & home game scene integration
+- [x] **Phase 2: Onboarding & Character World**
+  - 3-step interactive onboarding flow (Identity, 8 Origin Classes, Custom Starting Style)
+  - Multi-layer composable 2D character avatar engine (background + body + hair + outfit + accessories + effects)
+  - Character idle animation & ambient background themes (Forest, Archives, Mountain, Cyber Arcade, Celestial)
+  - Character Hall (live stat overview, attribute hex, and cosmetic wardrobe live preview)
+  - Home Game Scene viewport with live character rendering & adventure board
 
 - [ ] **Phase 3: Quests, AI Interpretation & CRUD**
   - Category picker (Mind, Body, Career, Life, Social, Growth)

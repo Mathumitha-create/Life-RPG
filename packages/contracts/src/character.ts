@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 export const CharacterAttributesSchema = z.object({
-  intellect: z.number().int().min(0).default(0),
-  strength: z.number().int().min(0).default(0),
-  discipline: z.number().int().min(0).default(0),
-  creativity: z.number().int().min(0).default(0),
-  wisdom: z.number().int().min(0).default(0),
-  social: z.number().int().min(0).default(0),
+  intellect: z.number().int().min(0).default(10),
+  strength: z.number().int().min(0).default(10),
+  discipline: z.number().int().min(0).default(10),
+  creativity: z.number().int().min(0).default(10),
+  wisdom: z.number().int().min(0).default(10),
+  social: z.number().int().min(0).default(10),
 });
 
 export type CharacterAttributes = z.infer<typeof CharacterAttributesSchema>;
@@ -30,6 +30,7 @@ export const CharacterStateSchema = z.object({
   currentLevelTitle: z.string(),
   attributes: CharacterAttributesSchema,
   cosmetics: CharacterCosmeticsSchema,
+  avatarBaseId: z.string(),
   currentStreak: z.number().int().min(0),
   longestStreak: z.number().int().min(0),
   lastActivityDate: z.string().optional(),
