@@ -26,13 +26,16 @@ describe("Progression Math & XP Curve", () => {
   });
 
   it("correctly maps total XP to levels according to formula", () => {
-    // Level 2 threshold = round(100 * 2^1.65) = 314
-    expect(getXpRequiredForLevel(2)).toBe(314);
+    const lvl2Threshold = getXpRequiredForLevel(2); // 314
+    const lvl3Threshold = getXpRequiredForLevel(3); // 613
+    expect(lvl2Threshold).toBe(314);
+    expect(lvl3Threshold).toBe(613);
+
     expect(getLevelFromTotalXp(0)).toBe(1);
-    expect(getLevelFromTotalXp(313)).toBe(1);
-    expect(getLevelFromTotalXp(314)).toBe(2);
-    expect(getLevelFromTotalXp(611)).toBe(2);
-    expect(getLevelFromTotalXp(612)).toBe(3);
+    expect(getLevelFromTotalXp(lvl2Threshold - 1)).toBe(1);
+    expect(getLevelFromTotalXp(lvl2Threshold)).toBe(2);
+    expect(getLevelFromTotalXp(lvl3Threshold - 1)).toBe(2);
+    expect(getLevelFromTotalXp(lvl3Threshold)).toBe(3);
   });
 
   it("calculates current level slice XP and progress percentage correctly", () => {
@@ -41,6 +44,9 @@ describe("Progression Math & XP Curve", () => {
     expect(summary.xpIntoCurrentLevel).toBe(100);
     expect(summary.xpRequiredForNextLevel).toBe(314);
     expect(summary.progressPercent).toBe(Math.round((100 / 314) * 100));
+
+    expect(getXpIntoCurrentLevel(100)).toBe(100);
+    expect(getXpToNextLevel(100)).toBe(314);
   });
 
   it("handles prestige levels beyond 20 gracefully", () => {
