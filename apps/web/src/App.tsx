@@ -5,7 +5,7 @@ import { OnboardingWizard } from "./features/onboarding/OnboardingWizard";
 import { GameShell } from "./components/layout/GameShell";
 import { apiClient } from "./services/apiClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { OnboardingRequest, CharacterCosmetics, UserProfile, CharacterState } from "@liferpg/contracts";
+import type { OnboardingRequest, CharacterCosmetics, UserProfile, CharacterState, CreateQuestRequest } from "@liferpg/contracts";
 import { Compass } from "lucide-react";
 
 export function App(): React.JSX.Element {
@@ -53,6 +53,12 @@ export function App(): React.JSX.Element {
     enabled: !!user && !!profile?.onboardingCompleted,
   });
 
+  const { data: quests = [], isLoading: isQuestsLoading, error: questsError } = useQuery({
+    queryKey: ["quests", user?.uid],
+    queryFn: () => apiClient.getQuests(idToken),
+    enabled: !!user && !!profile?.onboardingCompleted,
+  });
+
   // Onboarding Mutation
   const onboardingMutation = useMutation({
     mutationFn: async (data: OnboardingRequest) => {
@@ -72,6 +78,21 @@ export function App(): React.JSX.Element {
     onSuccess: (updatedCharacter) => {
       queryClient.setQueryData(["characterState", user?.uid], updatedCharacter);
     },
+  });
+
+  const createQuestMutation = useMutation({
+    mutationFn: (data: CreateQuestRequest) => apiClient.createQuest(data, idToken),
+    onSuccess: (quest) => queryClient.setQueryData(["quests", user?.uid], (current: typeof quests) => [quest, ...current]),
+  });
+
+  const updateQuestMutation = useMutation({
+    mutationFn: ({ questId, title }: { questId: string; title: string }) => apiClient.updateQuest(questId, { title }, idToken),
+    onSuccess: (updatedQuest) => queryClient.setQueryData(["quests", user?.uid], (current: typeof quests) => current.map((quest) => quest.id === updatedQuest.id ? updatedQuest : quest)),
+  });
+
+  const deleteQuestMutation = useMutation({
+    mutationFn: (questId: string) => apiClient.deleteQuest(questId, idToken),
+    onSuccess: (_result, questId) => queryClient.setQueryData(["quests", user?.uid], (current: typeof quests) => current.filter((quest) => quest.id !== questId)),
   });
 
   if (isAuthLoading || (user && (isProfileLoading || (profile?.onboardingCompleted && isCharacterLoading)))) {
@@ -141,6 +162,13 @@ export function App(): React.JSX.Element {
         await updateCosmeticsMutation.mutateAsync(cosmetics);
       }}
       isUpdatingCosmetics={updateCosmeticsMutation.isPending}
+      quests={quests}
+      isLoadingQuests={isQuestsLoading}
+      isSavingQuest={createQuestMutation.isPending || updateQuestMutation.isPending}
+      questError={questsError instanceof Error ? questsError.message : undefined}
+      onCreateQuest={async (data) => { await createQuestMutation.mutateAsync(data); }}
+      onUpdateQuest={async (questId, title) => { await updateQuestMutation.mutateAsync({ questId, title }); }}
+      onDeleteQuest={async (questId) => { await deleteQuestMutation.mutateAsync(questId); }}
     />
   );
 }

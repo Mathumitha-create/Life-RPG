@@ -4,6 +4,10 @@ import type {
   CharacterState,
   OnboardingRequest,
   UpdateCosmeticsRequest,
+  ActivityInterpretation,
+  CreateQuestRequest,
+  Quest,
+  UpdateQuestRequest,
 } from "@liferpg/contracts";
 import type { BaseAvatarDefinition, CosmeticAssetDefinition } from "@liferpg/game-rules";
 
@@ -28,6 +32,8 @@ export class ApiClient {
       ...options,
       headers,
     });
+
+    if (res.status === 204) return undefined as T;
 
     const json = (await res.json()) as ApiResponse<T>;
 
@@ -74,6 +80,29 @@ export class ApiClient {
       cosmetics: CosmeticAssetDefinition[];
     }>("/catalog/assets", { method: "GET" }, null);
   }
+
+    async interpretActivity(
+      data: Pick<CreateQuestRequest, "categoryId" | "text">,
+      idToken: string | null
+    ): Promise<{ categoryId: string; interpretation: ActivityInterpretation }> {
+      return this.request("/activities/interpret", { method: "POST", body: JSON.stringify(data) }, idToken);
+    }
+
+    async getQuests(idToken: string | null): Promise<Quest[]> {
+      return this.request<Quest[]>("/quests", { method: "GET" }, idToken);
+    }
+
+    async createQuest(data: CreateQuestRequest, idToken: string | null): Promise<Quest> {
+      return this.request<Quest>("/quests", { method: "POST", body: JSON.stringify(data) }, idToken);
+    }
+
+    async updateQuest(questId: string, data: UpdateQuestRequest, idToken: string | null): Promise<Quest> {
+      return this.request<Quest>(`/quests/${questId}`, { method: "PATCH", body: JSON.stringify(data) }, idToken);
+    }
+
+    async deleteQuest(questId: string, idToken: string | null): Promise<void> {
+      await this.request<never>(`/quests/${questId}`, { method: "DELETE" }, idToken);
+    }
 }
 
 export const apiClient = new ApiClient();

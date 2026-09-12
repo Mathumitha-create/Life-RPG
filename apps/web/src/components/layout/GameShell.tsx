@@ -1,17 +1,25 @@
 import React, { useState } from "react";
-import type { UserProfile, CharacterState, CharacterCosmetics } from "@liferpg/contracts";
+import type { UserProfile, CharacterState, CharacterCosmetics, CreateQuestRequest, Quest } from "@liferpg/contracts";
 import { TopHud } from "./TopHud";
 import { Nav, type NavTab } from "./Nav";
 import { HomeGameScene } from "../../features/game/HomeGameScene";
 import { CharacterScreen } from "../../features/character/CharacterScreen";
 import { Card } from "../ui/Card";
-import { ScrollText, Compass, Sparkles } from "lucide-react";
+import { Compass, Sparkles } from "lucide-react";
+import { QuestsScreen } from "../../features/quests/QuestsScreen";
 
 export interface GameShellProps {
   profile: UserProfile;
   character: CharacterState;
   onUpdateCosmetics: (cosmetics: CharacterCosmetics) => Promise<void>;
   isUpdatingCosmetics?: boolean;
+  quests: Quest[];
+  isLoadingQuests: boolean;
+  isSavingQuest: boolean;
+  questError?: string;
+  onCreateQuest: (request: CreateQuestRequest) => Promise<void>;
+  onUpdateQuest: (questId: string, title: string) => Promise<void>;
+  onDeleteQuest: (questId: string) => Promise<void>;
 }
 
 export function GameShell({
@@ -19,6 +27,13 @@ export function GameShell({
   character,
   onUpdateCosmetics,
   isUpdatingCosmetics = false,
+  quests,
+  isLoadingQuests,
+  isSavingQuest,
+  questError,
+  onCreateQuest,
+  onUpdateQuest,
+  onDeleteQuest,
 }: GameShellProps): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<NavTab>("home");
 
@@ -39,6 +54,7 @@ export function GameShell({
           <HomeGameScene
             character={character}
             nickname={profile.nickname}
+            quests={quests}
             onNavigateToQuests={() => setActiveTab("quests")}
             onNavigateToCharacter={() => setActiveTab("character")}
           />
@@ -53,21 +69,7 @@ export function GameShell({
           />
         )}
 
-        {activeTab === "quests" && (
-          <Card variant="panel" className="p-8 text-center space-y-4">
-            <div className="w-12 h-12 mx-auto rounded-xl bg-rpg-surface border border-rpg-amber flex items-center justify-center text-rpg-amber shadow-glow-amber">
-              <ScrollText className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-rpg-parchment font-display">
-                Quest Chamber & AI Interpreter
-              </h3>
-              <p className="text-xs text-rpg-parchment-muted max-w-md mx-auto mt-1">
-                Natural-language quest engine with structured classification scheduled for Phase 3.
-              </p>
-            </div>
-          </Card>
-        )}
+        {activeTab === "quests" && <QuestsScreen quests={quests} isLoading={isLoadingQuests} isSaving={isSavingQuest} error={questError} onCreate={onCreateQuest} onUpdate={onUpdateQuest} onDelete={onDeleteQuest} />}
 
         {activeTab === "bag" && (
           <Card variant="panel" className="p-8 text-center space-y-4">

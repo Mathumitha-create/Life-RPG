@@ -1,5 +1,5 @@
 {
-  "extends": "@liferpg/tsconfig/base.json",
+  "extends": "../../packages/tsconfig/base.json",
   "compilerOptions": {
     "target": "ES2022",
     "useDefineForClassFields": true,
@@ -9,8 +9,6 @@
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
     "outDir": "./dist",
-    "baseUrl": ".",
-    "types": ["vite/client"],
     "paths": {
       "@/*": ["./src/*"]
     }

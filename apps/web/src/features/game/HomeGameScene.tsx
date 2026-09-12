@@ -1,5 +1,5 @@
 import React from "react";
-import type { CharacterState } from "@liferpg/contracts";
+import type { CharacterState, Quest } from "@liferpg/contracts";
 import { getProgressionSummary } from "@liferpg/game-rules";
 import { CharacterAvatar } from "../../components/character/CharacterAvatar";
 import { Card } from "../../components/ui/Card";
@@ -12,6 +12,7 @@ export interface HomeGameSceneProps {
   nickname: string;
   onNavigateToQuests: () => void;
   onNavigateToCharacter: () => void;
+  quests: Quest[];
 }
 
 export function HomeGameScene({
@@ -19,8 +20,10 @@ export function HomeGameScene({
   nickname,
   onNavigateToQuests,
   onNavigateToCharacter,
+  quests,
 }: HomeGameSceneProps): React.JSX.Element {
   const progression = getProgressionSummary(character.totalXp);
+  const activeQuests = quests.filter((quest) => quest.status === "ACTIVE").slice(0, 3);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
@@ -102,61 +105,7 @@ export function HomeGameScene({
         </div>
 
         {/* Quest Stack Preview */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div
-            onClick={onNavigateToQuests}
-            className="p-3.5 rounded-xl bg-rpg-surface border border-rpg-border hover:border-rpg-amber transition-all cursor-pointer shadow-pixel-sm space-y-2 group"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-xl" aria-hidden="true">📚</span>
-              <span className="text-[10px] font-bold text-rpg-amber bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/20">
-                +60 XP
-              </span>
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-rpg-parchment group-hover:text-rpg-amber transition-colors">
-                Study DSA for 1 hour
-              </h4>
-              <p className="text-[11px] text-rpg-parchment-muted mt-0.5">Mind • Intellect +6</p>
-            </div>
-          </div>
-
-          <div
-            onClick={onNavigateToQuests}
-            className="p-3.5 rounded-xl bg-rpg-surface border border-rpg-border hover:border-rpg-amber transition-all cursor-pointer shadow-pixel-sm space-y-2 group"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-xl" aria-hidden="true">🏃</span>
-              <span className="text-[10px] font-bold text-rpg-amber bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/20">
-                +70 XP
-              </span>
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-rpg-parchment group-hover:text-rpg-amber transition-colors">
-                Walk 5 km
-              </h4>
-              <p className="text-[11px] text-rpg-parchment-muted mt-0.5">Body • Strength +7</p>
-            </div>
-          </div>
-
-          <div
-            onClick={onNavigateToQuests}
-            className="p-3.5 rounded-xl bg-rpg-surface border border-rpg-border hover:border-rpg-amber transition-all cursor-pointer shadow-pixel-sm space-y-2 group"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-xl" aria-hidden="true">🧹</span>
-              <span className="text-[10px] font-bold text-rpg-amber bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/20">
-                +30 XP
-              </span>
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-rpg-parchment group-hover:text-rpg-amber transition-colors">
-                Clean study desk
-              </h4>
-              <p className="text-[11px] text-rpg-parchment-muted mt-0.5">Life • Discipline +3</p>
-            </div>
-          </div>
-        </div>
+        {activeQuests.length > 0 ? <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">{activeQuests.map((quest) => <button key={quest.id} type="button" onClick={onNavigateToQuests} className="text-left p-3.5 rounded-xl bg-rpg-surface border border-rpg-border hover:border-rpg-amber transition-all cursor-pointer shadow-pixel-sm space-y-2 group"><div className="flex items-center justify-between"><span className="text-xl" aria-hidden="true">✦</span><span className="text-[10px] font-bold text-rpg-amber bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/20">+{quest.rewardPreview.xp} XP</span></div><div><h4 className="text-xs font-bold text-rpg-parchment group-hover:text-rpg-amber transition-colors break-words">{quest.title}</h4><p className="text-[11px] text-rpg-parchment-muted mt-0.5">{quest.categoryId} · {quest.type === "DAILY" ? "Daily" : "One time"}</p></div></button>)}</div> : <div className="rounded-xl border border-dashed border-rpg-border p-5 text-center text-sm text-rpg-parchment-muted">Your board is quiet. Add the next thing you want to accomplish.</div>}
 
         {/* Streak Notice */}
         <div className="flex items-center justify-between pt-3 border-t border-rpg-border/60 text-xs text-rpg-parchment-muted">

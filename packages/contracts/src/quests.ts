@@ -10,7 +10,7 @@ export const QuestStatusEnum = z.enum(["ACTIVE", "PAUSED", "ARCHIVED", "COMPLETE
 export type QuestStatus = z.infer<typeof QuestStatusEnum>;
 
 export const ActivityInterpretationRequestSchema = z.object({
-  categoryId: z.string(),
+  categoryId: CategoryIdEnum,
   text: z.string().min(1).max(500),
   locale: z.string().optional(),
 });
@@ -70,7 +70,7 @@ export const QuestSchema = z.object({
 export type Quest = z.infer<typeof QuestSchema>;
 
 export const CreateQuestRequestSchema = z.object({
-  categoryId: z.string(),
+  categoryId: CategoryIdEnum,
   text: z.string().min(1).max(500),
   type: QuestTypeEnum.default("ONE_TIME"),
   recurrence: z
@@ -94,6 +94,12 @@ export const UpdateQuestRequestSchema = z.object({
   type: QuestTypeEnum.optional(),
 });
 export type UpdateQuestRequest = z.infer<typeof UpdateQuestRequestSchema>;
+
+export const QuestInterpretationResponseSchema = z.object({
+  interpretation: ActivityInterpretationSchema,
+  categoryId: CategoryIdEnum,
+});
+export type QuestInterpretationResponse = z.infer<typeof QuestInterpretationResponseSchema>;
 
 export const CompleteQuestRequestSchema = z.object({
   operationId: z.string().min(1),
