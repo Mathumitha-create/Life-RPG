@@ -12,7 +12,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@liferpg/tsconfig": "*",
+    "@liferpg/tsconfig": "workspace:*",
     "typescript": "^5.7.3"
   }
 }
